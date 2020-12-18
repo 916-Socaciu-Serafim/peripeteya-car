@@ -92,7 +92,7 @@ def fill_image(image, horizontal_fill, vertical_fill, color):
     return background
 
 
-def generate_images(img, padding=100):
+def generate_images(img, padding=110):
     results = {}
     # images results
     img = cv2.resize(img, (240, 240))[100:]

@@ -78,7 +78,7 @@ class CameraPublisher(ThreadWithStop):
         self.camera.framerate = 15
 
         self.camera.brightness = 50
-        self.camera.shutter_speed = 1200
+        self.camera.shutter_speed = 24000
         self.camera.contrast = 0
         self.camera.iso = 0  # auto
 
@@ -118,7 +118,6 @@ class CameraPublisher(ThreadWithStop):
         """Stream function that actually published the frames into the pipes. Certain 
         processing(reshape) is done to the image format. 
         """
-        i = 0
 
         while self._running:
 

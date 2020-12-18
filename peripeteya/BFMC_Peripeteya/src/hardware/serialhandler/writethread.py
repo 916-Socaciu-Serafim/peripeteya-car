@@ -57,6 +57,7 @@ class WriteThread(Thread):
         """ Represents the thread activity to redirectionate the message.
         """
         while True:
+            print("Write thread, receiving command...")
             command = self.inP.recv()
             command_msg = self.messageConverter.get_command(**command)
             self.serialCom.write(command_msg.encode('ascii'))

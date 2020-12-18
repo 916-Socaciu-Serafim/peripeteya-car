@@ -116,7 +116,7 @@ def angle(height, radius):
 def steering_angle(image: np.ndarray):
     triangle_heights = np.asarray([i * 30 for i in range(1, 10)])
     img = deepcopy(image)
-    cloud_left, cloud_right = white_points_cloud_detection(img, 30)
+    cloud_left, cloud_right = white_points_cloud_detection(img, 0)
     left_function, right_function = plot_function(cloud_left, 2), plot_function(cloud_right, 2)
 
     left_radius = radius_of_curvature(left_function, 50)
@@ -154,5 +154,5 @@ def offset_from_center(image: np.ndarray):
         except Exception:
             continue
     if len(offsets) == 0:
-        return None
+        return 0
     return np.mean(np.asarray(offsets))

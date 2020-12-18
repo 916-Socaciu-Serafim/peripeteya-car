@@ -5,24 +5,23 @@ from src.utils.templates.workerprocess import WorkerProcess
 
 class SystemSupervisor(WorkerProcess):
 
-    def __init__(self, inPs, outPs, pi_camera=None):
+    def __init__(self, inPs, outPs):
         super(SystemSupervisor, self).__init__(inPs, outPs)
-        self._lane_supervisor = LaneSupervisor(pi_camera=pi_camera)
         print("System supervisor initialized")
 
     def run(self):
         print("Run system process")
         super(SystemSupervisor, self).run()
 
-    def read_command(self, outPs):
-        print("Trying to read command")
-        command = self._lane_supervisor.get_command_dictionary()
-        print(command)
-        for outP in outPs:
-            outP.send(command)
+    def read_command_offset(self, inP, outPs):
+        while True:
+            command, offset = inP.recv()
+            print("Sending command: ", command, "Offset: ", offset)
+            for outP in outPs:
+                outP.send(command)
 
     def _init_threads(self):
         print("Initializing System threads")
-        readTh = Thread(name="CommandReader", target=self.read_command, args=(self.outPs,))
-        self.threads.append(readTh)
+        lane_thread = Thread(name="ComandTransmitter", target=self.read_command_offset, args=(self.inPs[0], self.outPs,))
+        self.threads.append(lane_thread)
         pass

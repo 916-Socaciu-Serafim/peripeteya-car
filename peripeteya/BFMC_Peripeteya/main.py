@@ -31,6 +31,7 @@
 # ========================================================================
 import sys
 
+from src.modules.supervisors.lane_supervisor import LaneDetectionProcess
 from src.utils.system.system_supervisor import SystemSupervisor
 
 sys.path.append('../BFMC_Startup')
@@ -53,10 +54,12 @@ from src.utils.cameraspoofer.cameraspooferprocess import CameraSpooferProcess
 from src.utils.remotecontrol.remotecontrolreceiver import RemoteControlReceiver
 
 # =============================== CONFIG =================================================
-enableStream = True
+enableStream = False
 enableCameraSpoof = False
 enableRc = True
 enableCamera = True
+enableSystem = True
+enableSerial = False
 # ================================ PIPES ==================================================
 
 
@@ -64,45 +67,42 @@ enableCamera = True
 # ================================ PROCESSES ==============================================
 allProcesses = list()
 
-# =============================== HARDWARE PROC =========================================
-# ------------------- camera + streamer + System supervisor ----------------------
-
-camStR, camStS = Pipe(duplex=False)  # camera  ->  streamer
-
-if enableCameraSpoof:
-    camSpoofer = CameraSpooferProcess([], [camStS], 'vid')
-    allProcesses.append(camSpoofer)
-
-else:
-    camProc = CameraProcess([], [camStS])
-    allProcesses.append(camProc)
-if enableStream:
-    streamProc = CameraStreamer([camStR], [])
-    allProcesses.append(streamProc)
-
 # =============================== DATA ===================================================
 # gps client process
 # gpsProc = GpsProcess([], [gpsBrS])
 # allProcesses.append(gpsProc)
 
 # =============================== CAMERA SETTINGS ========================================
-# camera = picamera.PiCamera()
-# camera.resolution = (1920, 1080)
-# camera.contrast = 50
-# camera.brightness = 50
 
-# ===================================== CONTROL ==========================================
-# ------------------- remote controller -----------------------
-if enableRc:
-    rcShR, rcShS = Pipe(duplex=False)  # rc      ->  serial handler
+# DEPENDENCY TREE: CAMERA > (LANE DETECTION, MORE TO BE ADDED HERE) > SUPERVISOR > SERIAL HANDLER
+if enableCamera:
+    camStR, camStS = Pipe(duplex=False)  # camera  ->  streamer
 
-    # serial handler process
-    shProc = SerialHandler([rcShR], [])
-    allProcesses.append(shProc)
+    if enableCameraSpoof:
+        camSpoofer = CameraSpooferProcess([], [camStS], 'vid')
+        allProcesses.append(camSpoofer)
+    else:
+        camProc = CameraProcess([], [camStS])
+        allProcesses.append(camProc)
+    if enableStream:
+        streamProc = CameraStreamer([camStR], [])
+        allProcesses.append(streamProc)
 
-    # rc Process
-    rcProc = SystemSupervisor([camStR], [rcShS], pi_camera=None)
-    allProcesses.append(rcProc)
+    if enableSystem:
+        rcShR, rcShS = Pipe(duplex=False)  # rc      ->  serial handler
+        lane_out, lane_in = Pipe(duplex=False)  # -> lane detection handler
+
+        # rc Process
+        systemProc = SystemSupervisor([lane_out], [rcShS])
+        allProcesses.append(systemProc)
+        # Declare here all the other processes needed for the car
+        laneProc = LaneDetectionProcess([camStR], [lane_in])
+        allProcesses.append(laneProc)
+
+        if enableSerial:
+            # serial handler process
+            shProc = SerialHandler([rcShR], [])
+            allProcesses.append(shProc)
 
 print("Starting the processes!", allProcesses)
 for proc in allProcesses:
