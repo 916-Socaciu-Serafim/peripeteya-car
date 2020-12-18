@@ -1,6 +1,0 @@
-docs/build/
-.vscode/
-__pycache__
-*.pyc
-test/serialreader
-vid/
