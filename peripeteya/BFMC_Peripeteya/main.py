@@ -54,12 +54,11 @@ from src.utils.cameraspoofer.cameraspooferprocess import CameraSpooferProcess
 from src.utils.remotecontrol.remotecontrolreceiver import RemoteControlReceiver
 
 # =============================== CONFIG =================================================
-enableStream = False
+enableStream = True
 enableCameraSpoof = False
-enableRc = True
 enableCamera = True
 enableSystem = True
-enableSerial = False
+enableSerial = True
 # ================================ PIPES ==================================================
 
 

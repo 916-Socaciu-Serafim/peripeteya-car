@@ -1,40 +1,36 @@
 from threading import Thread
 
 from src.modules.controller.controller import Controller
-from src.modules.perception.lane_detection.image_processing.image_processing import generate_images
-from src.modules.perception.lane_detection.lane_processing.lane_processing import steering_angle, offset_from_center
-import time
-import picamera
-import numpy as np
+from src.modules.perception.lane_detection.test_images.image_processing import generate_images
 import cv2
 
+from src.modules.supervisors.cnn import load_model, predict
 from src.utils.templates.workerprocess import WorkerProcess
 
 
 class LaneSupervisor:
     def __init__(self):
-        self.controller = Controller(30, 30)
+        self.controller = Controller(5, 5)
         self.controller_brake()
+        self.model = load_model()
 
     def get_command_dictionary(self, image):
-        offset = 0
         try:
             results = generate_images(image)
-            cv2.imwrite("warped.jpg", results["warped"])
-            angle = steering_angle(results["warped"])
-            print("got angle:", angle)
-            offset = offset_from_center(results["warped"])
-            print("got offset: ", offset)
-            # if np.abs(offset) < 5:
-            #     offset = 0
-            self.controller.update_steering_angle(angle + offset/10)
-            self.controller_forward()
-        except Exception:
+            warped = results["warped_thresh"]
+            cv2.imwrite("warped.jpg", warped[warped.shape[0]//2:])
+            prediction = predict(warped[warped.shape[0]//2:], self.model)
+            speed = prediction[1]
+            angle = prediction[2]*6
+            speed = min(max(speed, -0.22), 0.22)
+            self.controller.update_steering_angle(angle)
+            self.controller.update_speed(speed)
+        except Exception as e:
             self.controller_brake()
-            print("Lane Supervisor Exception")
+            print("Lane Supervisor Exception: ", e)
             raise Exception()
         command = self.controller.get_command_dictionary()
-        return command, offset
+        return command, 0
 
     def controller_brake(self):
         self.controller.brake()

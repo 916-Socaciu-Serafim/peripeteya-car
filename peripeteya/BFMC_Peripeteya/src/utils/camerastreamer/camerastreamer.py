@@ -48,13 +48,13 @@ class CameraStreamer(WorkerProcess):
         Parameters
         ----------
         inPs : list(Pipe) 
-            List of input pipes, only the first pipe is used to transfer the captured frames. 
+            List of input pipes, only the first pipe is used to transfer the captured frames.
         outPs : list(Pipe) 
             List of output pipes (not used at the moment)
         """
         super(CameraStreamer, self).__init__(inPs, outPs)
 
-        self.serverIp = '192.168.1.198'  # raspberry ip
+        self.serverIp = '192.168.100.19'  # raspberry ip
         self.port = 2244  # com port
 
     # ===================================== RUN ==========================================

@@ -59,7 +59,7 @@ class CameraReceiver(WorkerProcess):
         super(CameraReceiver, self).__init__(inPs, outPs)
 
         self.port = 2244
-        self.serverIp = '192.168.1.180'# pc ip
+        self.serverIp = '192.168.100.16'# pc ip
 
         self.imgSize = (480, 640, 3)
 

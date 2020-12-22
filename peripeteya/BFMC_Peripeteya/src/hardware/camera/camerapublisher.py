@@ -75,15 +75,16 @@ class CameraPublisher(ThreadWithStop):
 
         # camera settings
         self.camera.resolution = (1640, 1232)
-        self.camera.framerate = 15
+        self.camera.framerate = 20
 
         self.camera.brightness = 50
-        self.camera.shutter_speed = 24000
+        # self.camera.shutter_speed = 24000
         self.camera.contrast = 0
-        self.camera.iso = 0  # auto
+        self.camera.iso = 200  # auto
+        self.camera.drc_strength = 'medium'
 
         self.imgSize = (640, 480)  # the actual image size
-        self.recordMode = False
+        self.recordMode = True
 
     # ===================================== GET STAMP ====================================
     def _get_timestamp(self):
