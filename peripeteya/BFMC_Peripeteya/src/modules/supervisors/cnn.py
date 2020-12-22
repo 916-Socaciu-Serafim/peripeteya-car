@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import cv2
 import numpy as np
 
-from src.modules.perception.lane_detection.test_images.image_processing import generate_images
+from src.modules.perception.lane_detection.image_processing.image_processing import generate_images
 
 
 class Net(nn.Module):

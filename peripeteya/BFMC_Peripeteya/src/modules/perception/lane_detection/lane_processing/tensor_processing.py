@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from src.modules.perception.lane_detection.test_images.image_processing import lane_start_points, \
+from src.modules.perception.lane_detection.image_processing.image_processing import lane_start_points, \
     split_horizontally, generate_images, init_tensors_image, proper_size
 from src.modules.perception.lane_detection.lane_processing.tensors import TensorPair, Tensor
 from src.modules.perception.lane_detection.video_processing.video_processing import read_video_to_frames

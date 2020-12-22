@@ -10,14 +10,14 @@ from src.modules.perception.lane_detection.video_processing.video_processing imp
 
 
 def test_image():
-    test_img_path = "notnow/image_c0_b40.jpg"
+    test_img_path = "../test_images/notnow/image_c0_b40.jpg"
     img = cv2.imread(test_img_path)
     img = proper_size(img)
     return img
 
 
 def init_tensors_image():
-    path = "../image_processing/init_tensors.jpg"
+    path = "init_tensors.jpg"
     img = cv2.imread(path)
     img = proper_size(img)
     return img

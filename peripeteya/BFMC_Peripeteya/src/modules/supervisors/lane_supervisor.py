@@ -1,7 +1,7 @@
 from threading import Thread
 
 from src.modules.controller.controller import Controller
-from src.modules.perception.lane_detection.test_images.image_processing import generate_images
+from src.modules.perception.lane_detection.image_processing.image_processing import generate_images
 import cv2
 
 from src.modules.supervisors.cnn import load_model, predict

@@ -1,7 +1,7 @@
 import math
 import cv2
 
-from src.modules.perception.lane_detection.test_images.image_processing import generate_images, annotate_image, \
+from src.modules.perception.lane_detection.image_processing.image_processing import generate_images, annotate_image, \
     proper_size
 from src.modules.supervisors.lane_supervisor import LaneSupervisor
 
